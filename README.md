@@ -32,7 +32,7 @@ To recreate the development environment, you need the following software and/or 
 
 We found these websites useful in developing this software:
 
-* [MiguelGrinberg](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
+* [Miguel Grinberg Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
 *
 *
 
