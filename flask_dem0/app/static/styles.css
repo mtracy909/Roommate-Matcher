@@ -1,0 +1,138 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f9f9f9;
+  padding: 20px;
+  color: #333;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.logo img {
+  width: 60px;
+  height: auto;
+}
+
+.auth-buttons button {
+  margin-left: 10px;
+  padding: 8px 16px;
+  border: none;
+  background-color: #333;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.auth-buttons button:hover {
+  background-color: #555;
+}
+
+/* Search Section */
+.search-section {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.search-section h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.search-bar {
+  margin: 10px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.search-bar input {
+  padding: 10px;
+  width: 300px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+}
+
+.search-bar button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  background-color: #333;
+  color: white;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+
+.search-bar button:hover {
+  background-color: #555;
+}
+
+.slogan {
+  margin-top: 10px;
+  color: #555;
+}
+
+/* Popular Complexes */
+.popular-complexes {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.complex-buttons {
+  margin-top: 15px;
+}
+
+.complex-buttons button {
+  margin: 8px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #333;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.complex-buttons button:hover {
+  background-color: #555;
+}
+
+/* How it Works */
+.how-it-works {
+  margin-top: 60px;
+  text-align: center;
+}
+
+.steps {
+  margin-top: 15px;
+  font-size: 1.1rem;
+  color: #444;
+}
+
+/* Footer */
+footer {
+  margin-top: 60px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+footer a {
+  margin: 0 10px;
+  color: #555;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
