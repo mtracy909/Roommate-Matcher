@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime, timezone
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from app import db
@@ -17,6 +18,41 @@ class User(db.Model):
     bio: so.Mapped[str] = so.mapped_column(sa.String(180), index=True)
 
     preference: so.WriteOnlyMapped['User_Preference'] = so.relationship(back_populates='user')
+    sent_messages: so.Mapped[list["message"]] = so.relationship(
+        "message", 
+        foreign_keys="message.sender_id",
+        back_populates="sender"
+    )
+    
+    received_messages: so.Mapped[list["message"]] = so.relationship(
+        "message", 
+        foreign_keys="message.reciever_id", 
+        back_populates="receiver"
+    )
+
+    sent_rating: so.Mapped[list["rating"]] = so.relationship(
+        "rating", 
+        foreign_keys="rating.sender_id",
+        back_populates="sender"
+    )
+    
+    received_rating: so.Mapped[list["rating"]] = so.relationship(
+        "rating", 
+        foreign_keys="rating.reciever_id", 
+        back_populates="receiver"
+    )
+
+    user1_bp_u: so.Mapped[list["match"]] = so.relationship(
+        "match", 
+        foreign_keys="match.user1",
+        back_populates="user1_bp"
+    )
+    
+    user2_bp_u: so.Mapped[list["match"]] = so.relationship(
+        "match", 
+        foreign_keys="match.user2", 
+        back_populates="user2_bp"
+    )
 
     def __repr__(self):
         return f'<User: {self.username}>, <Password: {self.password_hash}>, <{self.f_name}, {self.l_name}>'
@@ -39,3 +75,63 @@ class User_Preference(db.Model):
     preference: so.Mapped[Preference] = so.relationship(back_populates='user_preference')
 
     rank: so.Mapped[int] = so.mapped_column(index=True)
+
+class message(db.Model):
+
+    message_id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    reciever_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    sender_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+
+    message: so.Mapped[str] = so.mapped_column(sa.String(180), index=True)
+    created_at: so.Mapped[datetime] = so.mapped_column(default=datetime.now(timezone.utc))
+
+    sender: so.Mapped["User"] = so.relationship(
+        "User", 
+        foreign_keys=[sender_id],
+        back_populates="sent_messages"
+    )
+    
+    receiver: so.Mapped["User"] = so.relationship(
+        "User", 
+        foreign_keys=[reciever_id], 
+        back_populates="received_messages"
+    )
+
+class rating(db.Model):
+
+    rating_id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    reciever_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    sender_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+
+    message: so.Mapped[str] = so.mapped_column(sa.String(180), index=True)
+
+    sender: so.Mapped["User"] = so.relationship(
+        "User", 
+        foreign_keys=[sender_id],
+        back_populates="sent_rating"
+    )
+    
+    receiver: so.Mapped["User"] = so.relationship(
+        "User", 
+        foreign_keys=[reciever_id], 
+        back_populates="received_rating"
+    )
+
+class match(db.Model):
+
+    match_id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    user1: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    user2: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    percentage: so.Mapped[float] = so.mapped_column()
+
+    user1_bp: so.Mapped["User"] = so.relationship(
+        "User", 
+        foreign_keys=[user1],
+        back_populates="user1_bp_u"
+    )
+    
+    user2_bp: so.Mapped["User"] = so.relationship(
+        "User", 
+        foreign_keys=[user2], 
+        back_populates="user2_bp_u"
+    )
