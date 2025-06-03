@@ -10,7 +10,7 @@
 
 Steps to build and/or run the software:
 
-1. First step here
+1. run "pip install -r requirements.txt"
 2.
 3.
 
@@ -24,9 +24,16 @@ Instructions for using the software:
 
 To recreate the development environment, you need the following software and/or libraries with the specified versions:
 
-* First thing here
-*
-*
+* Python 3.8+
+* Flask==3.0.0
+* Flask-SQLAlchemy==3.1.1
+* Flask-Migrate==4.0.5
+* Flask-WTF==1.2.1
+* WTForms==3.1.1
+* email-validator==2.1.0
+* Werkzeug==3.0.1
+* SQLAlchemy==2.0.23
+* Alembic==1.13.1
 
 ## Useful Websites to Learn More
 
