@@ -24,15 +24,15 @@ Instructions for using the software:
 
 To recreate the development environment, you need the following software and/or libraries with the specified versions:
 
-* Python 3.8+
-* Flask==3.0.0
+* Python 3.12.1
+* Flask==3.1.0
 * Flask-SQLAlchemy==3.1.1
-* Flask-Migrate==4.0.5
-* Flask-WTF==1.2.1
-* WTForms==3.1.1
-* email-validator==2.1.0
-* Werkzeug==3.0.1
-* SQLAlchemy==2.0.23
+* Flask-Migrate==4.1.0
+* Flask-WTF==1.2.2
+* WTForms==3.2.1
+* email-validator==2.2.0
+* Werkzeug==3.1.3
+* SQLAlchemy==2.0.41
 
 ## Useful Websites to Learn More
 
