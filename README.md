@@ -10,7 +10,7 @@
 
 Steps to build and/or run the software:
 
-1. run "pip install -r requirements.txt"
+1. 
 2.
 3.
 
@@ -33,7 +33,6 @@ To recreate the development environment, you need the following software and/or 
 * email-validator==2.1.0
 * Werkzeug==3.0.1
 * SQLAlchemy==2.0.23
-* Alembic==1.13.1
 
 ## Useful Websites to Learn More
 
