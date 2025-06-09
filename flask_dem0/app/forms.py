@@ -4,6 +4,7 @@ from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationE
 from app.models import User
 import sqlalchemy as sa
 from app import db
+from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, Regexp
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -16,11 +17,11 @@ class SignupForm(FlaskForm):
         DataRequired(),
         Length(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
     ])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = StringField('Email', validators=[DataRequired(), Regexp(r'.+@byui\.edu$', message="Email must end with @byui.edu")])
     password = PasswordField('Password', validators=[
-        DataRequired(),
-        Length(min = 6, message = "Password must be at least 6 characters long")
-        ])
+        DataRequired(), Length(min=8, message="Password must be at least 8 characters long"),Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$',
+        message="Password must contain one uppercase letter, one lowercase letter, and one number.")
+])
     password2 = PasswordField('Repeat Password', validators=[
         DataRequired(), 
         EqualTo('password', message = "Passwords must match")

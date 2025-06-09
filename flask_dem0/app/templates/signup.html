@@ -27,6 +27,9 @@ c
         <p>
             {{ form.email.label }}<br>
             {{ form.email(size=64) }}<br>
+            <span id="passwordHelp" style="display:none; color:red; font-size:0.9em;">
+                Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.
+            </span>
             {% for error in form.email.errors %}
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
@@ -48,4 +51,39 @@ c
         <p>{{ form.submit() }}</p>
     </form>
   </div>
+   
+    <!-- 
+    JavaScript to select the password input field and the helper message,
+    uses a regular expression to check if the password meets the requirements,
+    which ensures the user gets real-time feedback while typing and prevents
+    submitting the form with an invalid password on the client side.
+    -->
+   
+   <script>
+    const passwordInput = document.getElementById('{{ form.password.id }}');
+    const passwordHelp = document.getElementById('passwordHelp');
+    const form = passwordInput.closest('form');
+
+    function validatePassword(password) {
+      const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+      return pattern.test(password);
+    }
+
+    passwordInput.addEventListener('input', () => {
+      if (!validatePassword(passwordInput.value)) {
+        passwordHelp.style.display = 'block';
+      } else {
+        passwordHelp.style.display = 'none';
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      if (!validatePassword(passwordInput.value)) {
+        e.preventDefault();
+        passwordHelp.style.display = 'block';
+        passwordInput.focus();
+        alert('Please fix your password before submitting.');
+      }
+    });
+  </script>
 {% endblock %}
