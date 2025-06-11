@@ -4,6 +4,7 @@ from app.forms import LoginForm, SignupForm
 from app.models import User
 import sqlalchemy as sa
 from werkzeug.security import generate_password_hash, check_password_hash
+from app.forms import ProfileForm
 
 @app.route("/")
 @app.route("/index")
@@ -103,3 +104,12 @@ def debug_clear_users():
         db.session.rollback()
         return f"Error: {str(e)}"
     
+
+@app.route('/create-profile', methods=['GET', 'POST'])
+def create_profile():
+    form = ProfileForm()
+    if form.validate_on_submit():
+        # In the future, you'd save to the database here
+        flash('Profile created successfully!', 'success')
+        return redirect(url_for('create_profile'))  # redirect to same page for now
+    return render_template('create_profile.html', form=form)

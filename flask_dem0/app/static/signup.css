@@ -48,3 +48,23 @@ input[type="password"]:focus {
   top: 20px;
   left: 20px;
 }
+
+.auth-form label {
+  display: block;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+button.btn {
+  padding: 12px 24px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button.btn:hover {
+  background-color: #555;
+}
