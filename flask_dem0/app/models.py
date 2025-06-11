@@ -17,6 +17,12 @@ class User(db.Model):
 
     bio: so.Mapped[str] = so.mapped_column(sa.String(180), index=True)
 
+    apartment_id: so.Mapped[int] = so.mapped_column(sa.Integer, sa.ForeignKey('apartment.id'))
+
+    apartment : so.Mapped['Apartment'] = so.relationship(
+        back_populates='users'
+        )
+
     preference: so.WriteOnlyMapped['User_Preference'] = so.relationship(back_populates='user')
     sent_messages: so.Mapped[list["message"]] = so.relationship(
         "message", 
@@ -135,3 +141,13 @@ class match(db.Model):
         foreign_keys=[user2], 
         back_populates="user2_bp_u"
     )
+
+class Apartment(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    name: so.Mapped[str] = so.mapped_column(sa.String(45), index=True)
+
+    users: so.Mapped[list["User"]] = so.relationship(
+        "User",
+        back_populates="apartment"
+    )
+    
