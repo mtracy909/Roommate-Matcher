@@ -113,3 +113,17 @@ def create_profile():
         flash('Profile created successfully!', 'success')
         return redirect(url_for('create_profile'))  # redirect to same page for now
     return render_template('create_profile.html', form=form)
+
+from app.models import Apartment, User
+
+@app.route("/search/<complex_name>")
+def search_results(complex_name):
+    users = db.session.scalars(
+        sa.select(User)
+        .join(User.apartment)
+        .where(Apartment.name == complex_name)
+    ).all()
+
+    return render_template("search_results.html", complex_name=complex_name, users=users)
+
+

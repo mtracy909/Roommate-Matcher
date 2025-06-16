@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+{% block content %}
+  <main>
+    <h1>Roommates at {{ complex_name }}</h1>
+
+    {% if users %}
+      <ul class="user-list">
+        {% for user in users %}
+          <li>
+            <h3>{{ user.username }}</h3>
+            <p>Major: {{ user.major }}</p>
+            <p>Bio: {{ user.bio }}</p>
+            <!-- Add more profile fields as needed -->
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No users found at this complex.</p>
+    {% endif %}
+  </main>
+{% endblock %}
