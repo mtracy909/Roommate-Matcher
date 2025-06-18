@@ -1,7 +1,7 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, session
 from app import app, db
 from app.forms import LoginForm, SignupForm
-from app.models import User
+from app.models import User, Apartment, Preference, User_Preference
 import sqlalchemy as sa
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms import ProfileForm
@@ -29,10 +29,20 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         
+        # Store user ID in session (simple session management)
+        session['user_id'] = user.id
+        session['username'] = user.username
+        
         flash(f'Login successful for {form.username.data}')
         return redirect(url_for('index'))
         
     return render_template("login.html", title="Login", form=form)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash('You have been logged out')
+    return redirect(url_for('index'))
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -80,6 +90,114 @@ def signup():
         
     return render_template("signup.html", title="Sign Up", form=form)
 
+def get_current_user():
+    """Helper function to get the current logged-in user"""
+    if 'user_id' not in session:
+        return None
+    return db.session.get(User, session['user_id'])
+
+@app.route('/create-profile', methods=['GET', 'POST'])
+def create_profile():
+    # Check if user is logged in
+    current_user = get_current_user()
+    if not current_user:
+        flash('Please log in first to create a profile', 'error')
+        return redirect(url_for('login'))
+    
+    form = ProfileForm()
+    if form.validate_on_submit():
+        try:
+            # Update user profile information
+            current_user.f_name = form.first_name.data
+            current_user.l_name = form.last_name.data
+            current_user.bio = form.bio.data
+            
+            # Get the apartment name from the form choice
+            apartment_name = dict(form.apartment_complex.choices)[form.apartment_complex.data]
+            
+            # Find or create the apartment complex
+            apartment = db.session.scalar(
+                sa.select(Apartment).where(Apartment.name == apartment_name)
+            )
+            
+            if not apartment:
+                # Create new apartment if it doesn't exist
+                apartment = Apartment(name=apartment_name)
+                db.session.add(apartment)
+                db.session.flush()  # Get the apartment ID
+            
+            current_user.apartment_id = apartment.id
+            
+            # Clear existing preferences for this user
+            db.session.execute(
+                sa.delete(User_Preference).where(User_Preference.user_id == current_user.id)
+            )
+            
+            # Add new preferences
+            for i, pref_key in enumerate(form.preferences.data):
+                # Get the preference name from the form choices
+                pref_name = dict(form.preferences.choices)[pref_key]
+                
+                # Find the preference in the database
+                preference = db.session.scalar(
+                    sa.select(Preference).where(Preference.name == pref_name)
+                )
+                
+                if preference:
+                    user_pref = User_Preference(
+                        user_id=current_user.id,
+                        preference_id=preference.id,
+                        rank=i + 1  # Simple ranking based on order
+                    )
+                    db.session.add(user_pref)
+            
+            db.session.commit()
+            flash('Profile created successfully!', 'success')
+            return redirect(url_for('index'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while creating your profile. Please try again.', 'error')
+            print(f"Profile creation error: {e}")
+            return redirect(url_for('create_profile'))
+    
+    return render_template('create_profile.html', form=form)
+
+@app.route("/search/<complex_name>")
+def search_results(complex_name):
+    try:
+        # Query users by apartment complex name
+        users = db.session.scalars(
+            sa.select(User)
+            .join(User.apartment)
+            .where(Apartment.name == complex_name)
+            .where(User.f_name.isnot(None))  # Only show users with completed profiles
+            .where(User.f_name != '')
+        ).all()
+        
+        # Add preferences to each user for display
+        for user in users:
+            user.preferences_list = []
+            user_prefs = db.session.scalars(
+                sa.select(User_Preference, Preference)
+                .join(Preference, User_Preference.preference_id == Preference.id)
+                .where(User_Preference.user_id == user.id)
+                .order_by(User_Preference.rank)
+            ).all()
+            
+            for user_pref in user_prefs:
+                pref_name = db.session.scalar(
+                    sa.select(Preference.name).where(Preference.id == user_pref.preference_id)
+                )
+                user.preferences_list.append(pref_name)
+
+        return render_template("search_results.html", complex_name=complex_name, users=users)
+        
+    except Exception as e:
+        flash('An error occurred while searching. Please try again.', 'error')
+        print(f"Search error: {e}")
+        return redirect(url_for('index'))
+
 #Debug routes (remove in production)
 @app.route("/debug/users")
 def debug_users():
@@ -103,27 +221,5 @@ def debug_clear_users():
     except Exception as e:
         db.session.rollback()
         return f"Error: {str(e)}"
-    
-
-@app.route('/create-profile', methods=['GET', 'POST'])
-def create_profile():
-    form = ProfileForm()
-    if form.validate_on_submit():
-        # In the future, you'd save to the database here
-        flash('Profile created successfully!', 'success')
-        return redirect(url_for('create_profile'))  # redirect to same page for now
-    return render_template('create_profile.html', form=form)
-
-from app.models import Apartment, User
-
-@app.route("/search/<complex_name>")
-def search_results(complex_name):
-    users = db.session.scalars(
-        sa.select(User)
-        .join(User.apartment)
-        .where(Apartment.name == complex_name)
-    ).all()
-
-    return render_template("search_results.html", complex_name=complex_name, users=users)
 
 

@@ -17,9 +17,9 @@ class User(db.Model):
 
     bio: so.Mapped[str] = so.mapped_column(sa.String(180), index=True)
 
-    apartment_id: so.Mapped[int] = so.mapped_column(sa.Integer, sa.ForeignKey('apartment.id'))
+    apartment_id: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer, sa.ForeignKey('apartment.id'), nullable=True)
 
-    apartment : so.Mapped['Apartment'] = so.relationship(
+    apartment : so.Mapped[Optional['Apartment']] = so.relationship(
         back_populates='users'
         )
 
