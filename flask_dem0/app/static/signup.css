@@ -1,52 +1,179 @@
+/* Global font (Inter) */
 body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #fafafa;
-  color: #333;
+    font-family: 'Inter', sans-serif;
 }
 
+/* Color Variables from the image */
+:root {
+    --primary-blue: #006EB6; /* 0, 110, 182 */
+    --black: #000000;       /* 0, 0, 0 */
+    --white: #FFFFFF;       /* 255, 255, 255 */
+    --gray: #949598;        /* 148, 148, 148 */
+    --error-red: #d9534f;   /* A common red for errors, you can adjust if a specific red is needed */
+}
+
+/* General Body and Layout */
+body {
+    font-family: 'Inter', sans-serif; /* Using Inter font as per instructions */
+    margin: 0;
+    padding: 0;
+    background-color: var(--white); /* Light background for the overall page */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.site-header {
+    padding: 20px;
+    background-color: var(--white);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.site-header .logo {
+    display: block;
+}
+
+.site-header .logo img {
+    max-height: 50px; /* Adjust as needed for your logo size */
+    width: auto;
+    border-radius: 8px; /* Rounded corners for the logo */
+}
+
+.form-container {
+    flex-grow: 1; /* Allows the form container to take up available space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--white); /* Background for the form area */
+}
+
+.signup-section {
+    background-color: var(--white);
+    padding: 40px;
+    border-radius: 12px; /* More rounded corners */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow for depth */
+    width: 100%;
+    max-width: 450px; /* Max width for the form container */
+    box-sizing: border-box;
+}
+
+.form-title {
+    text-align: center;
+    color: var(--black);
+    margin-bottom: 30px;
+    font-size: 2.2em; /* Slightly larger title */
+    font-weight: 700; /* Bolder font */
+}
+
+/* Form Styling */
 .auth-form {
-  max-width: 400px;
-  margin: 60px auto;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between form groups */
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 25px;
+.form-group {
+    margin-bottom: 15px; /* Adjust if gap property is not enough for spacing */
+    position: relative;
 }
 
-.auth-form p {
-  margin-bottom: 20px;
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--black);
+    font-weight: 600;
+    font-size: 0.95em;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-  width: 100%;
-  padding: 12px 14px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease;
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--gray);
+    border-radius: 8px; /* Rounded corners for inputs */
+    font-size: 1em;
+    color: var(--black);
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-input[type="text"]:focus,c
-input[type="email"]:focus,
-input[type="password"]:focus {
-  border-color: #555;
-  outline: none;
+.form-input:focus {
+    border-color: var(--primary-blue);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 110, 182, 0.3); /* More prominent shadow on focus */
 }
 
-.logo-fixed {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+.form-input::placeholder {
+    color: var(--gray);
+    opacity: 0.7; /* Slightly more visible placeholder */
+}
+
+/* Error Messages and Guidance */
+.error-message {
+    color: var(--error-red);
+    font-size: 0.85em;
+    margin-top: 5px;
+    display: block;
+    font-weight: 500;
+}
+
+.password-guidance {
+    color: var(--gray);
+    font-size: 0.85em;
+    margin-top: 5px;
+    display: none; /* Initially hidden, shown by JS */
+}
+
+/* Submit Button */
+.submit-button {
+    background-color: var(--primary-blue);
+    color: var(--white);
+    padding: 14px 25px; /* Slightly larger padding */
+    border: none;
+    border-radius: 8px; /* Rounded corners for button */
+    font-size: 1.15em; /* Slightly larger text */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 110, 182, 0.2); /* Subtle shadow for the button */
+}
+
+.submit-button:hover {
+    background-color: #005f9e; /* Slightly darker blue on hover */
+    transform: translateY(-3px); /* More pronounced lift effect */
+    box-shadow: 0 6px 15px rgba(0, 110, 182, 0.3); /* Stronger shadow on hover */
+}
+
+.submit-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 110, 182, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .signup-section {
+        padding: 25px;
+        margin: 15px; /* Smaller margin on small screens */
+        border-radius: 8px;
+    }
+
+    .form-title {
+        font-size: 1.8em;
+        margin-bottom: 25px;
+    }
+
+    .form-input, .submit-button {
+        padding: 10px 12px;
+        font-size: 0.95em;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+    }
 }
 
 .auth-form label {

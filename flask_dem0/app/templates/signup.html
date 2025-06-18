@@ -1,89 +1,118 @@
 {% extends "index.html" %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
 {% endblock %}
 
-
-c
 {% block content %}
-  <!-- Top-left logo link -->
-    <a href="{{ url_for('index') }}" class="logo logo-fixed">
-    <img src="{{ url_for('static', filename='starter-logo.png') }}" alt="Roommate Matcher Logo">
-    </a>
+    <header class="site-header">
+        <!-- Top-left logo link -->
+        <a href="{{ url_for('index') }}" class="logo">
+            <img src="{{ url_for('static', filename='starter-logo.png') }}" alt="Roommate Matcher Logo" class="rounded-lg">
+        </a>
+    </header>
 
+    <main class="form-container">
+        <section class="signup-section">
+            <h1 class="form-title" id="form-title">Sign Up</h1>
+            <form action="" method="post" class="auth-form" novalidate aria-labelledby="form-title">
+                {{ form.hidden_tag() }}
 
-  <div class="form-wrapper">
-    <h1>Sign Up</h1>
-    <form action="" method="post" class="auth-form" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
-            {% for error in form.username.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=64) }}<br>
-            <span id="passwordHelp" style="display:none; color:red; font-size:0.9em;">
-                Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.
-            </span>
-            {% for error in form.email.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
-            {% for error in form.password.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password2.label }}<br>
-            {{ form.password2(size=32) }}<br>
-            {% for error in form.password2.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-  </div>
-   
-    <!-- 
-    JavaScript to select the password input field and the helper message,
-    uses a regular expression to check if the password meets the requirements,
-    which ensures the user gets real-time feedback while typing and prevents
-    submitting the form with an invalid password on the client side.
-    -->
-   
-   <script>
-    const passwordInput = document.getElementById('{{ form.password.id }}');
-    const passwordHelp = document.getElementById('passwordHelp');
-    const form = passwordInput.closest('form');
+                <div class="form-group">
+                    {{ form.username.label(class="form-label") }}
+                    {{ form.username(class="form-input", size=32, placeholder="Enter your username", aria_describedby="username-errors") }}
+                    {% if form.username.errors %}
+                        <div id="username-errors" class="error-message" role="alert">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
 
-    function validatePassword(password) {
-      const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-      return pattern.test(password);
-    }
+                <div class="form-group">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-input", size=64, placeholder="Enter your email address", type="email", aria_describedby="email-errors") }}
+                    {% if form.email.errors %}
+                        <div id="email-errors" class="error-message" role="alert">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
 
-    passwordInput.addEventListener('input', () => {
-      if (!validatePassword(passwordInput.value)) {
-        passwordHelp.style.display = 'block';
-      } else {
-        passwordHelp.style.display = 'none';
-      }
-    });
+                <div class="form-group">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-input", size=32, placeholder="Enter your password", type="password", aria_describedby="password-errors password-help") }}
+                    <small id="password-help" class="password-guidance">
+                        Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.
+                    </small>
+                    {% if form.password.errors %}
+                        <div id="password-errors" class="error-message" role="alert">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
 
-    form.addEventListener('submit', (e) => {
-      if (!validatePassword(passwordInput.value)) {
-        e.preventDefault();
-        passwordHelp.style.display = 'block';
-        passwordInput.focus();
-        alert('Please fix your password before submitting.');
-      }
-    });
-  </script>
+                <div class="form-group">
+                    {{ form.password2.label(class="form-label") }}
+                    {{ form.password2(class="form-input", size=32, placeholder="Confirm your password", type="password", aria_describedby="password2-errors") }}
+                    {% if form.password2.errors %}
+                        <div id="password2-errors" class="error-message" role="alert">
+                            {% for error in form.password2.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.submit(class="submit-button") }}
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const passwordInput = document.getElementById('{{ form.password.id }}'); // Dynamic ID from Flask-WTF
+            const passwordHelp = document.getElementById('password-help');
+            const form = passwordInput.closest('form');
+
+            const validatePassword = (password) => {
+                const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+                return pattern.test(password);
+            };
+
+            const updatePasswordGuidance = () => {
+                if (!validatePassword(passwordInput.value) && passwordInput.value.length > 0) {
+                    passwordHelp.style.display = 'block';
+                    passwordInput.setAttribute('aria-invalid', 'true');
+                } else {
+                    passwordHelp.style.display = 'none';
+                    passwordInput.setAttribute('aria-invalid', 'false');
+                }
+            };
+
+            passwordInput.addEventListener('input', updatePasswordGuidance);
+            passwordInput.addEventListener('focus', () => {
+                passwordHelp.style.display = 'block';
+            });
+            passwordInput.addEventListener('blur', updatePasswordGuidance);
+
+            form.addEventListener('submit', (e) => {
+                if (!validatePassword(passwordInput.value)) {
+                    e.preventDefault();
+                    passwordHelp.style.display = 'block';
+                    passwordInput.focus();
+                    passwordInput.setAttribute('aria-invalid', 'true');
+                    // Consider replacing alert with a custom modal for better UX
+                    alert('Please ensure your password meets the requirements before submitting.');
+                }
+            });
+        });
+    </script>
 {% endblock %}
