@@ -1,10 +1,84 @@
 from flask import render_template, redirect, url_for, flash, request, session
+from psutil import users
 from app import app, db
 from app.forms import LoginForm, SignupForm
 from app.models import User, Apartment, Preference, User_Preference
 import sqlalchemy as sa
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms import ProfileForm
+
+
+
+
+# Apartment display name mapping
+apartment_display_names = {
+    'undecided': 'Undecided / Not Sure Yet',
+    'abri_apartments': 'Abri Apartments',
+    'alldredge_house': 'Alldredge House',
+    'alpine_chalet': 'Alpine Chalet',
+    'american_avenue': 'American Avenue',
+    'at_the_grove': 'At the Grove',
+    'autumn_winds': 'Autumn Winds',
+    'abby_lane_manor': 'Abby Lane Manor',
+    'bayside_manor': 'Bayside Manor',
+    'birch_plaza': 'Birch Plaza',
+    'birch_wood_1': 'Birch Wood I',
+    'birch_wood_2': 'Birch Wood II',
+    'blue_door': 'The Blue Door',
+    'briarwood_apartments': 'Briarwood Apartments',
+    'brooklyn_apartments': 'Brooklyn Apartments',
+    'brookside_village': 'Brookside Village',
+    'bunkhouse': 'Bunkhouse',
+    'carriage_house': 'Carriage House',
+    'centre_square': 'Centre Square',
+    'clarke_apartments': 'Clarke Apartments',
+    'colonial_heights': 'Colonial Heights Townhouses',
+    'colonial_house': 'Colonial House',
+    'cottonwood': 'Cottonwood',
+    'creekside_cottages': 'Creekside Cottages',
+    'crestwood_apartments': 'Crestwood Apartments',
+    'crestwood_cottage': 'Crestwood Cottage',
+    'crestwood_house': 'Crestwood House',
+    'davenport_apartments': 'Davenport Apartments',
+    'delta_phi_apartments': 'Delta Phi Apartments',
+    'gates': 'The Gates',
+    'georgetown_apartments': 'Georgetown Apartments',
+    'greenbrier': 'Greenbrier',
+    'heritage': 'Heritage',
+    'hillcrest_townhouses': 'Hillcrest Townhouses',
+    'jordan_ridge': 'Jordan Ridge',
+    'kensington_manor': 'Kensington Manor',
+    'la_jolla': 'La Jolla',
+    'lodge_the': 'The Lodge',
+    'landing': 'The Landing',
+    'legacy_ridge': 'Legacy Ridge',
+    'milano_flats': 'Milano Flats',
+    'mountain_crest': 'Mountain Crest',
+    'northpoint': 'NorthPoint',
+    'park_view_apts': 'Park View Apartments',
+    'pines': 'The Pines',
+    'pincock_house': 'Pincock House',
+    'pinnacle_point': 'Pinnacle Point',
+    'red_door': 'The Red Door',
+    'riviera_apartments': 'Riviera Apartments',
+    'rock_casa': 'Rock Casa',
+    'rockland_apartments': 'Rockland Apartments',
+    'rose_casa': 'Rose Casa',
+    'royal_crest': 'Royal Crest',
+    'shelbourne_apartments': 'Shelbourne Apartments',
+    'snowview_apartments': 'Snowview Apartments',
+    'somerset_apartments': 'Somerset Apartments',
+    'sundance_apartments': 'Sundance Apartments',
+    'the_cove': 'The Cove',
+    'towers_i': 'Towers I',
+    'towers_ii': 'Towers II',
+    'university_view': 'University View',
+    'webster_house': 'Webster House',
+    'whitfield_house': 'Whitfield House',
+    'windsor_manor': 'Windsor Manor',
+    'sunrise_village': 'Sunrise Village',
+}
+
 
 @app.route("/")
 @app.route("/index")
@@ -113,7 +187,8 @@ def create_profile():
             current_user.bio = form.bio.data
             
             # Get the apartment name from the form choice
-            apartment_name = dict(form.apartment_complex.choices)[form.apartment_complex.data]
+            apartment_key = form.apartment_complex.data  # e.g., 'gates'
+            apartment_name = apartment_display_names.get(apartment_key, apartment_key)
             
             # Find or create the apartment complex
             apartment = db.session.scalar(
@@ -166,12 +241,15 @@ def create_profile():
 @app.route("/search/<complex_name>")
 def search_results(complex_name):
     try:
-        # Query users by apartment complex name
+        # Convert slug to display name
+        display_name = apartment_display_names.get(complex_name, complex_name)
+
+        # Query users by display name (e.g., "The Gates")
         users = db.session.scalars(
             sa.select(User)
             .join(User.apartment)
-            .where(Apartment.name == complex_name)
-            .where(User.f_name.isnot(None))  # Only show users with completed profiles
+            .where(Apartment.name == display_name)
+            .where(User.f_name.isnot(None))
             .where(User.f_name != '')
         ).all()
         
@@ -191,8 +269,8 @@ def search_results(complex_name):
                 )
                 user.preferences_list.append(pref_name)
 
-        return render_template("search_results.html", complex_name=complex_name, users=users)
-        
+        return render_template("search_results.html", complex_name=display_name, users=users)
+
     except Exception as e:
         flash('An error occurred while searching. Please try again.', 'error')
         print(f"Search error: {e}")

@@ -27,30 +27,37 @@
       <p class="slogan">Find roommates living in your apartment complex.</p>
     </section>
 
-    <section class="popular-complexes">
-      <h2>Popular Apartment Complexes</h2>
-      <div class="complex-buttons">
-        <a href="{{ url_for('search_results', complex_name='Gates, The - Men') }}">
-        <button>The Gates - Men</button>
-        </a>
+  <section class="popular-complexes">
+    <h2>Popular Apartment Complexes</h2>
+    <div class="complex-buttons">
+      <a href="{{ url_for('search_results', complex_name='gates') }}">
+        <button>The Gates</button>
+      </a>
+      <a href="{{ url_for('search_results', complex_name='the_cove') }}">
         <button>The Cove</button>
+      </a>
+      <a href="{{ url_for('search_results', complex_name='windsor_manor') }}">
         <button>Windsor Manor</button>
+      </a>
+      <a href="{{ url_for('search_results', complex_name='university_view') }}">
         <button>University View</button>
-        <button>Sundance</button>
-      </div>
-    </section>
+      </a>
+      <a href="{{ url_for('search_results', complex_name='sundance_apartments') }}">
+        <button>Sundance Apartments</button>
+      </a>
+    </div>
+  </section>
 
-    <section class="how-it-works">
-      <h2>How it Works!</h2>
-      <div class="steps">
-        <span>Step 1</span> --->
-        <span>Step 2</span> --->
-        <span>Step 3</span> --->
-        <span>Step 4</span> --->
-        <span>Step 5</span>
-      </div>
-    </section>
-  </main>
+  <section class="how-it-works">
+    <h2>How it Works!</h2>
+    <div class="how-it-works-cards">
+      <div class="step-card"><strong>Step 1:</strong><br>Sign Up</div>
+      <div class="step-card"><strong>Step 2:</strong><br>Create Profile</div>
+      <div class="step-card"><strong>Step 3:</strong><br>Browse Roommates</div>
+      <div class="step-card"><strong>Step 4:</strong><br>Send Request</div>
+      <div class="step-card"><strong>Step 5:</strong><br>Get Matched</div>
+    </div>
+  </section>
 
   <footer>
     <a href="#">About</a> |

@@ -107,17 +107,7 @@ header {
   background-color: #555;
 }
 
-/* How it Works */
-.how-it-works {
-  margin-top: 60px;
-  text-align: center;
-}
 
-.steps {
-  margin-top: 15px;
-  font-size: 1.1rem;
-  color: #444;
-}
 
 /* Footer */
 footer {
@@ -135,4 +125,34 @@ footer a {
 
 footer a:hover {
   text-decoration: underline;
+}
+
+
+.how-it-works-cards {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.step-card {
+  background: #f7f7f7;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-width: 120px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.how-it-works {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.how-it-works h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
