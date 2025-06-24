@@ -1,12 +1,13 @@
 from flask import render_template, redirect, url_for, flash, request, session
 from psutil import users
-from app import app, db
+from app import app, db, login
 from app.forms import LoginForm, SignupForm
 from app.models import User, Apartment, Preference, User_Preference
 import sqlalchemy as sa
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms import ProfileForm
-
+from flask_login import current_user, login_user, logout_user, login_required
+from urllib.parse import urlsplit
 
 
 
@@ -107,14 +108,22 @@ def login():
         session['user_id'] = user.id
         session['username'] = user.username
         
+        # Using flask_login to login the user
+        # Useful for blocking routes that we want users to be logged in to use
+        login_user(user, remember=form.remember_me.data)
+
         flash(f'Login successful for {form.username.data}')
-        return redirect(url_for('index'))
+        next_page = request.args.get('next')
+        if not next_page or urlsplit(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
         
     return render_template("login.html", title="Login", form=form)
 
 @app.route("/logout")
 def logout():
     session.clear()
+    logout_user()
     flash('You have been logged out')
     return redirect(url_for('index'))
 
@@ -171,6 +180,7 @@ def get_current_user():
     return db.session.get(User, session['user_id'])
 
 @app.route('/create-profile', methods=['GET', 'POST'])
+@login_required
 def create_profile():
     # Check if user is logged in
     current_user = get_current_user()
@@ -299,5 +309,3 @@ def debug_clear_users():
     except Exception as e:
         db.session.rollback()
         return f"Error: {str(e)}"
-
-
