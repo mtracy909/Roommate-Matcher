@@ -20,10 +20,9 @@
   <main>
     <section class="search-section">
       <h1>Search by Apartment Complex</h1>
-      <div class="search-bar">
-        <input type="text" placeholder="Enter apartment complex..." />
-        <button>Search</button>
-      </div>
+      <form action="{{ url_for('search') }}" method="GET" class="search-form">
+        <input type="text" name="complex_name" placeholder="Enter Apartment Complex Name" required>
+        <button type="submit">Search</button>
       <p class="slogan">Find roommates living in your apartment complex.</p>
     </section>
 

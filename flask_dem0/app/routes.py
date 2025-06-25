@@ -306,6 +306,15 @@ def search_results(complex_name):
         flash('An error occurred while searching. Please try again.', 'error')
         print(f"Search error: {e}")
         return redirect(url_for('index'))
+    
+@app.route("/search")
+def search():
+    complex_name = request.args.get('complex_name', '').strip().lower()
+    if not complex_name:
+        flash('Please enter an apartment complex name to search', 'warning')
+        return redirect(url_for('index'))
+    url_friendly_name = complex_name.replace(' ', '_').replace('-', '_')
+    return redirect(url_for('search_results', complex_name=url_friendly_name))
 
 #Debug routes (remove in production)
 @app.route("/debug/users")
