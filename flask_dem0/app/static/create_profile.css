@@ -1,0 +1,79 @@
+/* General Page Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+/* Logo in top-left corner */
+.logo-fixed {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.logo-fixed img {
+  height: 50px;
+}
+
+/* Form Wrapper */
+.form-wrapper {
+  max-width: 600px;
+  margin: 100px auto;
+  background-color: #ffffff;
+  padding: 40px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Heading */
+.form-wrapper h1 {
+  text-align: center;
+  color: #006EB6; /* Blue */
+  margin-bottom: 30px;
+}
+
+/* Form Inputs */
+.auth-form input[type="text"],
+.auth-form textarea,
+.auth-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  background-color: #fff;
+  color: #000;
+}
+
+/* Checkbox/Radio Preferences */
+.auth-form label {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Error Messages */
+.auth-form span {
+  font-size: 14px;
+  color: red;
+}
+
+/* Submit Button */
+.auth-form input[type="submit"] {
+  background-color: #006EB6;
+  color: #ffffff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.auth-form input[type="submit"]:hover {
+  background-color: #005a98;
+}
