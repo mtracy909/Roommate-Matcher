@@ -63,8 +63,6 @@ class SignupForm(FlaskForm):
             pass
 
 
-
-
 class ProfileForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(max=30)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(max=30)])
@@ -82,8 +80,8 @@ class ProfileForm(FlaskForm):
             ('abby_lane_manor', 'Abby Lane Manor'),
             ('bayside_manor', 'Bayside Manor'),
             ('birch_plaza', 'Birch Plaza'),
-            ('birch_wood_1', 'Birch Wood I'),
-            ('birch_wood_2', 'Birch Wood II'),
+            ('birch_wood_i', 'Birch Wood I'),
+            ('birch_wood_ii', 'Birch Wood II'),
             ('blue_door', 'The Blue Door'),
             ('briarwood_apartments', 'Briarwood Apartments'),
             ('brooklyn_apartments', 'Brooklyn Apartments'),
@@ -100,43 +98,29 @@ class ProfileForm(FlaskForm):
             ('crestwood_cottage', 'Crestwood Cottage'),
             ('crestwood_house', 'Crestwood House'),
             ('davenport_apartments', 'Davenport Apartments'),
-            ('delta_phi_apartments', 'Delta Phi Apartments'),
             ('gates', 'The Gates'),
             ('georgetown_apartments', 'Georgetown Apartments'),
             ('greenbrier', 'Greenbrier'),
             ('heritage', 'Heritage'),
             ('hillcrest_townhouses', 'Hillcrest Townhouses'),
             ('jordan_ridge', 'Jordan Ridge'),
-            ('kensington_manor', 'Kensington Manor'),
-            ('la_jolla', 'La Jolla'),
-            ('lifting_placeholder', 'The Lodge'),
             ('landing', 'The Landing'),
             ('legacy_ridge', 'Legacy Ridge'),
             ('milano_flats', 'Milano Flats'),
             ('mountain_crest', 'Mountain Crest'),
-            ('northpoint', 'NorthPoint'),
-            ('park_view_apts', 'Park View Apartments'),
+            ('northpoint', 'Northpoint'),
+            ('park_view', 'Park View Apartments'),
             ('pines', 'The Pines'),
-            ('pincock_house', 'Pincock House'),
-            ('pinnacle_point', 'Pinnacle Point'),
             ('red_door', 'The Red Door'),
-            ('rivieria_apartments', 'Riviera Apartments'),
-            ('rock_casa', 'Rock Casa'),
             ('rockland_apartments', 'Rockland Apartments'),
-            ('rose_casa', 'Rose Casa'),
             ('royal_crest', 'Royal Crest'),
             ('shelbourne_apartments', 'Shelbourne Apartments'),
             ('snowview_apartments', 'Snowview Apartments'),
             ('somerset_apartments', 'Somerset Apartments'),
-            ('sundance_apartments', 'Sundance Apartments'),
-            ('the_cove', 'The Cove'),
             ('towers_i', 'Towers I'),
-            ('towers_ii', 'Towers II'),
             ('university_view', 'University View'),
-            ('webster_house', 'Webster House'),
             ('whitfield_house', 'Whitfield House'),
             ('windsor_manor', 'Windsor Manor'),
-            ('sunrise_village', 'Sunrise Village'),
         ],
         validators=[DataRequired()]
     )

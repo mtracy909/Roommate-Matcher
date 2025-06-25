@@ -9,22 +9,20 @@ from app.forms import ProfileForm
 from flask_login import current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
 
-
-
-# Apartment display name mapping
+# Updated apartment display name mapping to match your database
 apartment_display_names = {
     'undecided': 'Undecided / Not Sure Yet',
     'abri_apartments': 'Abri Apartments',
     'alldredge_house': 'Alldredge House',
     'alpine_chalet': 'Alpine Chalet',
     'american_avenue': 'American Avenue',
-    'at_the_grove': 'At the Grove',
+    'at_the_grove': 'At The Grove',
     'autumn_winds': 'Autumn Winds',
     'abby_lane_manor': 'Abby Lane Manor',
     'bayside_manor': 'Bayside Manor',
     'birch_plaza': 'Birch Plaza',
-    'birch_wood_1': 'Birch Wood I',
-    'birch_wood_2': 'Birch Wood II',
+    'birch_wood_i': 'Birch Wood I',
+    'birch_wood_ii': 'Birch Wood II',
     'blue_door': 'The Blue Door',
     'briarwood_apartments': 'Briarwood Apartments',
     'brooklyn_apartments': 'Brooklyn Apartments',
@@ -41,45 +39,30 @@ apartment_display_names = {
     'crestwood_cottage': 'Crestwood Cottage',
     'crestwood_house': 'Crestwood House',
     'davenport_apartments': 'Davenport Apartments',
-    'delta_phi_apartments': 'Delta Phi Apartments',
     'gates': 'The Gates',
     'georgetown_apartments': 'Georgetown Apartments',
     'greenbrier': 'Greenbrier',
     'heritage': 'Heritage',
     'hillcrest_townhouses': 'Hillcrest Townhouses',
     'jordan_ridge': 'Jordan Ridge',
-    'kensington_manor': 'Kensington Manor',
-    'la_jolla': 'La Jolla',
-    'lodge_the': 'The Lodge',
     'landing': 'The Landing',
     'legacy_ridge': 'Legacy Ridge',
     'milano_flats': 'Milano Flats',
     'mountain_crest': 'Mountain Crest',
-    'northpoint': 'NorthPoint',
-    'park_view_apts': 'Park View Apartments',
+    'northpoint': 'Northpoint',
+    'park_view': 'Park View Apartments',
     'pines': 'The Pines',
-    'pincock_house': 'Pincock House',
-    'pinnacle_point': 'Pinnacle Point',
     'red_door': 'The Red Door',
-    'riviera_apartments': 'Riviera Apartments',
-    'rock_casa': 'Rock Casa',
     'rockland_apartments': 'Rockland Apartments',
-    'rose_casa': 'Rose Casa',
     'royal_crest': 'Royal Crest',
     'shelbourne_apartments': 'Shelbourne Apartments',
     'snowview_apartments': 'Snowview Apartments',
     'somerset_apartments': 'Somerset Apartments',
-    'sundance_apartments': 'Sundance Apartments',
-    'the_cove': 'The Cove',
     'towers_i': 'Towers I',
-    'towers_ii': 'Towers II',
     'university_view': 'University View',
-    'webster_house': 'Webster House',
     'whitfield_house': 'Whitfield House',
-    'windsor_manor': 'Windsor Manor',
-    'sunrise_village': 'Sunrise Village',
+    'windsor_manor': 'Windsor Manor'
 }
-
 
 @app.route("/")
 @app.route("/index")
@@ -196,18 +179,28 @@ def create_profile():
             current_user.l_name = form.last_name.data
             current_user.bio = form.bio.data
             
-            # Get the apartment name from the form choice
-            apartment_key = form.apartment_complex.data  # e.g., 'gates'
-            apartment_name = apartment_display_names.get(apartment_key, apartment_key)
+            # Get the apartment slug from the form choice
+            apartment_slug = form.apartment_complex.data  # e.g., 'gates'
+            apartment_display = apartment_display_names.get(apartment_slug, apartment_slug)
             
-            # Find or create the apartment complex
+            # Find apartment by display_name OR url_slug
             apartment = db.session.scalar(
-                sa.select(Apartment).where(Apartment.name == apartment_name)
+                sa.select(Apartment).where(
+                    sa.or_(
+                        Apartment.display_name == apartment_display,
+                        Apartment.url_slug == apartment_slug,
+                        Apartment.name.like(f"%{apartment_display}%")
+                    )
+                )
             )
             
             if not apartment:
                 # Create new apartment if it doesn't exist
-                apartment = Apartment(name=apartment_name)
+                apartment = Apartment(
+                    name=apartment_display,
+                    display_name=apartment_display,
+                    url_slug=apartment_slug
+                )
                 db.session.add(apartment)
                 db.session.flush()  # Get the apartment ID
             
@@ -218,10 +211,23 @@ def create_profile():
                 sa.delete(User_Preference).where(User_Preference.user_id == current_user.id)
             )
             
-            # Add new preferences
+            # Add new preferences with proper mapping
+            preference_mapping = {
+                'clean': 'Clean and Organized',
+                'social': 'Social and Outgoing',
+                'quiet': 'Quiet Study Environment',
+                'pet': 'Pet Friendly',
+                'non_smoker': 'Non-Smoker',
+                'early': 'Early Riser',
+                'night': 'Night Owl',
+                'cooking': 'Cooking Enthusiast',
+                'fitness': 'Fitness Oriented',
+                'budget': 'Budget Conscious'
+            }
+            
             for i, pref_key in enumerate(form.preferences.data):
-                # Get the preference name from the form choices
-                pref_name = dict(form.preferences.choices)[pref_key]
+                # Get the preference name from the mapping
+                pref_name = preference_mapping.get(pref_key, pref_key)
                 
                 # Find the preference in the database
                 preference = db.session.scalar(
@@ -253,22 +259,36 @@ def search_results(complex_name):
     try:
         # Convert slug to display name
         display_name = apartment_display_names.get(complex_name, complex_name)
+        
+        print(f"Searching for apartment: {complex_name} -> {display_name}")
 
-        # Query users by display name (e.g., "The Gates")
+        # Query users by multiple apartment name patterns to handle inconsistencies
         users = db.session.scalars(
             sa.select(User)
             .join(User.apartment)
-            .where(Apartment.name == display_name)
+            .where(
+                sa.or_(
+                    Apartment.name == display_name,
+                    Apartment.display_name == display_name,
+                    Apartment.url_slug == complex_name,
+                    Apartment.name.like(f"%{display_name}%"),
+                    # Handle cases where apartment names have "- Men" or "- Women"
+                    Apartment.name.like(f"{display_name}%"),
+                    # Handle "The" prefix variations
+                    Apartment.name.like(f"%, {display_name}%") if display_name.startswith('The ') else sa.text('false')
+                )
+            )
             .where(User.f_name.isnot(None))
             .where(User.f_name != '')
         ).all()
+        
+        print(f"Found {len(users)} users")
         
         # Add preferences to each user for display
         for user in users:
             user.preferences_list = []
             user_prefs = db.session.scalars(
-                sa.select(User_Preference, Preference)
-                .join(Preference, User_Preference.preference_id == Preference.id)
+                sa.select(User_Preference)
                 .where(User_Preference.user_id == user.id)
                 .order_by(User_Preference.rank)
             ).all()
@@ -277,7 +297,8 @@ def search_results(complex_name):
                 pref_name = db.session.scalar(
                     sa.select(Preference.name).where(Preference.id == user_pref.preference_id)
                 )
-                user.preferences_list.append(pref_name)
+                if pref_name:
+                    user.preferences_list.append(pref_name)
 
         return render_template("search_results.html", complex_name=display_name, users=users)
 
@@ -294,10 +315,26 @@ def debug_users():
         users = db.session.scalars(sa.select(User)).all()
         output = "<h2>All Users:</h2>"
         for user in users:
-            output += f"<p>ID: {user.id}, Username: {user.username}, Email: {user.email}</p>"
+            apartment_name = "No apartment"
+            if user.apartment:
+                apartment_name = user.apartment.name
+            output += f"<p>ID: {user.id}, Username: {user.username}, Name: {user.f_name} {user.l_name}, Apartment: {apartment_name}</p>"
         return output
     except Exception as e:
         return f"Error querying users: {str(e)}"
+
+@app.route("/debug/apartments")
+def debug_apartments():
+    """View all apartments in database"""
+    try:
+        apartments = db.session.scalars(sa.select(Apartment)).all()
+        output = "<h2>All Apartments:</h2>"
+        for apt in apartments:
+            user_count = db.session.scalar(sa.select(sa.func.count(User.id)).where(User.apartment_id == apt.id))
+            output += f"<p>ID: {apt.id}, Name: '{apt.name}', Display: '{apt.display_name}', Slug: '{apt.url_slug}', Users: {user_count}</p>"
+        return output
+    except Exception as e:
+        return f"Error querying apartments: {str(e)}"
     
 @app.route("/debug/clear-users")
 def debug_clear_users():

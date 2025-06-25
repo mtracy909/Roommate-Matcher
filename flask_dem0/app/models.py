@@ -146,6 +146,8 @@ class match(db.Model):
 class Apartment(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(45), index=True)
+    display_name: so.Mapped[str] = so.mapped_column(sa.String(45), index=True)
+    url_slug: so.Mapped[str] = so.mapped_column(sa.String(45), index=True)
 
     users: so.Mapped[list["User"]] = so.relationship(
         "User",
