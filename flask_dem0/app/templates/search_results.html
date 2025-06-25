@@ -1,27 +1,42 @@
 {% extends "index.html" %}
-{% block content %}
-  <main>
-    <h1>Roommates at {{ complex_name }}</h1>
 
-    {% if users %}
-      <ul class="user-list">
-        {% for user in users %}
-          <li>
-            <h3>{{ user.f_name }} {{ user.l_name }} (@{{ user.username }})</h3>
-            <p><strong>Bio:</strong> {{ user.bio if user.bio else "No bio provided" }}</p>
-            {% if user.preferences_list %}
-              <p><strong>Lifestyle Preferences:</strong> 
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='search_results.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="logo">
+  <a href="{{ url_for('index') }}">
+    <img src="{{ url_for('static', filename='starter-logo.png') }}" alt="Roommate Matcher Logo">
+  </a>
+</div>
+<main>
+  <h1>Roommates at {{ complex_name }}</h1>
+
+  {% if users %}
+    <div class="profile-grid">
+      {% for user in users %}
+        <div class="profile-card">
+          <h3>{{ user.f_name }} {{ user.l_name }} <span class="username">(@{{ user.username }})</span></h3>
+          <p><strong>Bio:</strong> {{ user.bio if user.bio else "No bio provided" }}</p>
+
+          {% if user.preferences_list %}
+            <div class="prefs">
+              <strong>Lifestyle Preferences:</strong>
+              <ul class="prefs-list">
                 {% for pref in user.preferences_list %}
-                  <span class="preference-tag">{{ pref }}</span>{% if not loop.last %}, {% endif %}
+                  <li>{{ pref }}</li>
                 {% endfor %}
-              </p>
-            {% endif %}
-            <!-- Add more profile fields as needed -->
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No users found at this complex.</p>
-    {% endif %}
-  </main>
+              </ul>
+            </div>
+          {% endif %}
+
+          <button class="connect-btn">Connect</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No users found at this complex.</p>
+  {% endif %}
+</main>
 {% endblock %}
