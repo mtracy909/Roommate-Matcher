@@ -1,158 +1,460 @@
+/* Variables for easier theme management using the provided color scheme */
+:root {
+  --primary-blue: #006EB6; /* From your image: 006EB6 */
+  --black: #000000;         /* From your image: 000000 */
+  --white: #FFFFFF;         /* From your image: FFFFFF */
+  --grey: #949598;          /* From your image: 949598 */
+
+  /* Semantic color names based on usage */
+  --brand-color: var(--primary-blue);
+  --text-color-dark: var(--black);
+  --text-color-light: var(--white);
+  --background-light: var(--white);
+  --background-dark: var(--black);
+  --border-color: var(--grey);
+  --card-background: var(--white);
+  --slogan-color: var(--grey); /* Using grey for less emphasis */
+
+  /* Font and Spacing */
+  --font-family-sans: 'Arial', sans-serif;
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  /* Other common properties */
+  --border-radius: 8px;
+  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slightly more pronounced shadow */
+  --transition-speed: 0.3s ease;
+}
+
 /* Reset and Base Styles */
-* {
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
 }
 
 body {
-  background-color: #f9f9f9;
-  padding: 20px;
-  color: #333;
+  font-family: var(--font-family-sans);
+  background-color: var(--background-light);
+  color: var(--text-color-dark);
+  line-height: 1.6; /* Improved readability */
+  padding: var(--spacing-sm); /* Keep some padding around the main content */
+  min-height: 100vh; /* Ensure body takes full viewport height */
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 1200px; /* Max width for content */
+  margin: 0 auto; /* Center the container */
+  padding: var(--spacing-md) var(--spacing-sm); /* Responsive padding */
+  flex-grow: 1; /* Allow main content to grow */
+}
+
+/* Skip link for accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--brand-color);
+  color: var(--white);
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.3s ease-in;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Utility class for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Links and Buttons Base Styles */
+a {
+  color: var(--brand-color);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+}
+
+a:hover {
+  text-decoration: underline;
+  color: var(--secondary-color); /* Slightly darker blue or a related hover color */
+}
+
+.button {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  transition: background-color var(--transition-speed), color var(--transition-speed), transform var(--transition-speed);
+}
+
+.button:hover {
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.button-primary {
+  background-color: var(--brand-color);
+  color: var(--text-color-light);
+}
+
+.button-primary:hover {
+  background-color: darken(var(--brand-color), 10%); /* Darken the primary color on hover (requires preprocessor or manual calculation) */
+  background-color: #005699; /* Manually darkened version of #006EB6 */
+}
+
+.button-secondary {
+  background-color: var(--grey);
+  color: var(--text-color-dark);
+}
+
+.button-secondary:hover {
+  background-color: darken(var(--grey), 10%); /* Darken the grey on hover */
+  background-color: #7a7b7e; /* Manually darkened version of #949598 */
 }
 
 /* Header */
-header {
+.main-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--background-light);
+  box-shadow: var(--box-shadow);
+  position: sticky; /* Sticky header for better UX */
+  top: 0;
+  z-index: 10;
+  width: 100%;
 }
 
-.logo img {
-  width: 60px;
-  height: auto;
+.main-header .logo img {
+  width: 60px; /* Consistent size */
+  height: 60px; /* Ensure square aspect ratio if logo is square */
+  display: block; /* Remove extra space below image */
 }
 
-.auth-buttons button {
-  margin-left: 10px;
-  padding: 8px 16px;
-  border: none;
-  background-color: #333;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
+.main-nav .nav-links {
+  list-style: none;
+  display: flex;
+  gap: var(--spacing-sm); /* Spacing between nav items */
+  align-items: center;
 }
 
-.auth-buttons button:hover {
-  background-color: #555;
+.welcome-message {
+  margin-left: var(--spacing-sm);
+  color: var(--text-color-dark);
+  font-weight: bold;
 }
 
 /* Search Section */
 .search-section {
   text-align: center;
-  margin-top: 40px;
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 .search-section h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-}
-
-.search-bar {
-  margin: 10px auto;
-  display: flex;
-  justify-content: center;
-}
-
-.search-bar input {
-  padding: 10px;
-  width: 300px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px 0 0 5px;
-}
-
-.search-bar button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
-  background-color: #333;
-  color: white;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-}
-
-.search-bar button:hover {
-  background-color: #555;
+  font-size: clamp(1.8rem, 4vw, 2.8rem); /* Responsive font size */
+  margin-bottom: var(--spacing-sm);
+  color: var(--brand-color);
 }
 
 .slogan {
-  margin-top: 10px;
-  color: #555;
+  margin-top: var(--spacing-xs);
+  color: var(--slogan-color);
+  font-size: 1.1rem;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-md);
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid var(--border-color); /* Add border to the whole search bar */
+  border-radius: var(--border-radius);
+  overflow: hidden; /* Ensures child elements respect border-radius */
+}
+
+.search-bar input {
+  flex-grow: 1; /* Input takes up available space */
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 1rem;
+  border: none; /* Remove individual border */
+  outline: none; /* Remove default outline, add focus styling instead */
+}
+
+.search-bar input:focus {
+  box-shadow: 0 0 0 2px var(--brand-color); /* Custom focus outline */
+  border-color: var(--brand-color);
+}
+
+.search-bar button {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: 1rem;
+  border: none;
+  background-color: var(--brand-color);
+  color: var(--text-color-light);
+  border-radius: 0; /* Remove individual border-radius, it's handled by parent */
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+}
+
+.search-bar button:hover {
+  background-color: darken(var(--brand-color), 10%);
+  background-color: #005699; /* Manually darkened version of #006EB6 */
 }
 
 /* Popular Complexes */
 .popular-complexes {
-  margin-top: 50px;
+  margin-top: var(--spacing-xl);
   text-align: center;
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
-.complex-buttons {
-  margin-top: 15px;
+.popular-complexes h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color-dark);
 }
 
-.complex-buttons button {
-  margin: 8px;
-  padding: 10px 20px;
-  border: none;
-  background-color: #333;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
+.complex-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Always 3 columns on large screens */
+  gap: var(--spacing-sm);
+  justify-content: center;
+  align-items: center;
 }
 
-.complex-buttons button:hover {
-  background-color: #555;
+.complex-button {
+  background-color: var(--brand-color);
+  color: var(--text-color-light);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius);
+  font-weight: bold;
+  transition: background-color var(--transition-speed), transform var(--transition-speed);
 }
 
+.complex-button:hover {
+  background-color: darken(var(--brand-color), 10%);
+  background-color: #005699; /* Manually darkened version of #006EB6 */
+  transform: translateY(-2px);
+  text-decoration: none; /* Remove underline on hover for buttons */
+}
 
-
-/* Footer */
-footer {
-  margin-top: 60px;
+/* How It Works Section */
+.how-it-works {
   text-align: center;
-  font-size: 0.9rem;
-  color: #777;
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
-footer a {
-  margin: 0 10px;
-  color: #555;
-  text-decoration: none;
+.how-it-works h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color-dark);
 }
-
-footer a:hover {
-  text-decoration: underline;
-}
-
 
 .how-it-works-cards {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
+  flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+  gap: var(--spacing-sm); /* Consistent gap */
 }
 
 .step-card {
-  background: #f7f7f7;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  min-width: 120px;
+  background: var(--card-background);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  flex: 1 1 calc(20% - var(--spacing-sm)); /* Distribute items, allow shrinking */
+  min-width: 140px; /* Minimum width for cards */
+  max-width: 200px; /* Max width for cards for better layout control */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Evenly space content */
+  transition: transform var(--transition-speed);
+}
+
+.step-card:hover {
+  transform: translateY(-5px); /* Lift on hover for engagement */
+}
+
+.step-card h3 {
+  font-size: 1.2rem;
+  color: var(--brand-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.step-card p {
+  font-size: 0.95rem;
+  color: var(--text-color-dark);
+}
+
+/* Footer */
+.main-footer {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md) var(--spacing-sm);
   text-align: center;
   font-size: 0.9rem;
-  font-weight: 500;
+  color: var(--slogan-color);
+  background-color: var(--background-light);
+  border-top: 1px solid var(--border-color);
 }
 
-.how-it-works {
-  text-align: center;
-  margin-top: 2rem;
+.footer-nav .footer-links {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
 }
 
-.how-it-works h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+.footer-nav .footer-links a {
+  color: var(--text-color-dark);
+  padding: var(--spacing-xs);
+  transition: color var(--transition-speed);
+}
+
+.footer-nav .footer-links a:hover {
+  color: var(--brand-color);
+  text-decoration: underline;
+}
+
+.copyright {
+  margin-top: var(--spacing-xs);
+  color: var(--slogan-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start; /* Align logo and nav to start */
+    padding: var(--spacing-sm);
+  }
+
+  .main-nav {
+    width: 100%;
+    margin-top: var(--spacing-sm);
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    width: 100%;
+    align-items: center; /* Center nav items when stacked */
+  }
+
+  .nav-links li {
+    width: 100%; /* Make list items take full width */
+    text-align: center;
+  }
+
+  .nav-links .button {
+    width: 80%; /* Buttons take up more space */
+    margin: 0 auto; /* Center buttons */
+  }
+
+  .welcome-message {
+    margin-left: 0;
+    margin-top: var(--spacing-xs);
+    text-align: center;
+    width: 100%;
+  }
+
+  .search-bar {
+    flex-direction: column;
+    width: 90%; /* Adjust width for smaller screens */
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: var(--border-radius); /* Apply border-radius to the whole container */
+    overflow: hidden;
+  }
+
+  .search-bar input {
+    border-radius: var(--border-radius) var(--border-radius) 0 0; /* Rounded top corners */
+    text-align: center;
+  }
+
+  .search-bar button {
+    border-radius: 0 0 var(--border-radius) var(--border-radius); /* Rounded bottom corners */
+    width: 100%;
+    margin-top: -1px; /* Overlap slightly to remove gap if any */
+  }
+
+  .how-it-works-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .step-card {
+    width: 80%; /* Make cards wider on smaller screens */
+    max-width: 300px; /* Limit max width even when stacked */
+  }
+
+  .complex-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsive for small screens */
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: var(--spacing-xs);
+  }
+
+  .container {
+    padding: var(--spacing-sm);
+  }
+
+  .search-section h1,
+  .popular-complexes h2,
+  .how-it-works h2 {
+    font-size: 1.8rem;
+  }
+
+  .slogan {
+    font-size: 1rem;
+  }
+
+  .nav-links .button {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+
+  .step-card {
+    padding: var(--spacing-sm);
+    min-width: unset;
+    width: 95%; /* Even wider for very small screens */
+  }
 }
