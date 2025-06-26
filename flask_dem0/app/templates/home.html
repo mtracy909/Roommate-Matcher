@@ -8,6 +8,16 @@
   </div>
   <nav class="main-nav">
     <ul class="nav-links">
+  <header>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+      var complexes = ['Undecided','Abri Apartments','Alldredge House','Alpine Chalet','American Avenue','At The Grove','Autumn Winds','Abby Lane Manor','Bayside Manor','Birch Plaza','Birch Wood I','Birch Wood II','The Blue Door','Briarwood Apartments','Brooklyn Apartments','Brookside Village','Bunkhouse','Carriage House','Centre Square','Clarke Apartments','Colonial Heights Townhouses','Colonial House','Cottonwood','Creekside Cottages','Crestwood Apartments','Crestwood Cottage','Crestwood House','Davenport Apartments','The Gates','Georgetown Apartments','Greenbrier','Heritage','Hillcrest Townhouses','Jordan Ridge','The Landing','Legacy Ridge','Milano Flats','Mountain Crest','Northpoint','Park View Apartments','The Pines','The Red Door','Rockland Apartments','Royal Crest','Shelbourne Apartments','Snowview Apartments','Somerset Apartments','Towers I','University View','Whitfield House','Windsor Manor']
+    </script>
+    <div class="logo">
+      <img src="{{ url_for('static', filename='starter-logo.png') }}" alt="Roommate Matcher Logo" />
+    </div>
+    <div class="auth-buttons">
       {% if session.user_id %}
       <li><a href="{{ url_for('create_profile') }}" class="button button-primary">Create Profile</a></li>
       <li><a href="{{ url_for('logout') }}" class="button button-secondary">Logout</a></li>
@@ -20,16 +30,19 @@
   </nav>
 </header>
 
-<main class="container">
-  <section class="search-section">
-    <h1>Find Your Ideal Roommate</h1>
-    <p class="slogan">Connect with roommates living in your apartment complex.</p>
-    <form action="{{ url_for('search') }}" method="GET" class="search-bar" role="search">
-      <label for="apartment-search-input" class="sr-only">Enter apartment complex name</label>
-      <input type="text" id="apartment-search-input" name="complex_name" placeholder="Enter apartment complex..." aria-label="Search by apartment complex name" />
-      <button type="submit" aria-label="Search">Search</button>
-    </form>
-  </section>
+  <main class="container">
+    <section class="search-section">
+      <h1>Search by Apartment Complex</h1>
+      <p class="slogan">Find roommates living in your apartment complex.</p>
+      <form action="{{ url_for('search') }}" method="GET" class="search-form" autocomplete="off">
+        <input id="searchBar" type="text" name="complex_name" placeholder="Enter Apartment Complex Name" required>
+        <script>
+        autocomplete(document.getElementById("searchBar"), complexes);
+        </script>
+        <button type="submit">Search</button>
+      
+      
+    </section>
 
   <section class="popular-complexes">
     <h2>Popular Apartment Complexes</h2>
