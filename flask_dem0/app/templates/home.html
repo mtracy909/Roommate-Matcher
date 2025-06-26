@@ -8,15 +8,12 @@
   </div>
   <nav class="main-nav">
     <ul class="nav-links">
-  <header>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
       var complexes = ['Undecided','Abri Apartments','Alldredge House','Alpine Chalet','American Avenue','At The Grove','Autumn Winds','Abby Lane Manor','Bayside Manor','Birch Plaza','Birch Wood I','Birch Wood II','The Blue Door','Briarwood Apartments','Brooklyn Apartments','Brookside Village','Bunkhouse','Carriage House','Centre Square','Clarke Apartments','Colonial Heights Townhouses','Colonial House','Cottonwood','Creekside Cottages','Crestwood Apartments','Crestwood Cottage','Crestwood House','Davenport Apartments','The Gates','Georgetown Apartments','Greenbrier','Heritage','Hillcrest Townhouses','Jordan Ridge','The Landing','Legacy Ridge','Milano Flats','Mountain Crest','Northpoint','Park View Apartments','The Pines','The Red Door','Rockland Apartments','Royal Crest','Shelbourne Apartments','Snowview Apartments','Somerset Apartments','Towers I','University View','Whitfield House','Windsor Manor']
     </script>
-    <div class="logo">
-      <img src="{{ url_for('static', filename='starter-logo.png') }}" alt="Roommate Matcher Logo" />
-    </div>
+    
     <div class="auth-buttons">
       {% if session.user_id %}
       <li><a href="{{ url_for('create_profile') }}" class="button button-primary">Create Profile</a></li>
