@@ -246,6 +246,7 @@ a:hover {
 .complex-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Always 3 columns on large screens */
+  grid-template-rows: repeat(2, 1fr);    /* Always 2 rows on large screens */
   gap: var(--spacing-sm);
   justify-content: center;
   align-items: center;
@@ -425,6 +426,7 @@ a:hover {
 
   .complex-grid {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsive for small screens */
+    grid-template-rows: unset; /* Let rows auto-flow on small screens */
   }
 }
 
