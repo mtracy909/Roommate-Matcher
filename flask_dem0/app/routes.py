@@ -255,6 +255,7 @@ def create_profile():
     return render_template('create_profile.html', form=form)
 
 @app.route("/search/<complex_name>")
+@login_required
 def search_results(complex_name):
     try:
         # Convert slug to display name
@@ -357,6 +358,7 @@ def debug_clear_users():
         return f"Error: {str(e)}"
     
 @app.route("/connect/<recipient_id>", methods=['POST'])
+@login_required
 def connect(recipient_id):
     sender_id = session['user_id']
 
