@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request, session
 from psutil import users
 from app import app, db, login
 from app.forms import LoginForm, SignupForm
-from app.models import User, Apartment, Preference, User_Preference
+from app.models import User, Apartment, Preference, User_Preference, message
 import sqlalchemy as sa
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms import ProfileForm
@@ -355,3 +355,30 @@ def debug_clear_users():
     except Exception as e:
         db.session.rollback()
         return f"Error: {str(e)}"
+    
+@app.route("/connect/<recipient_id>", methods=['POST'])
+def connect(recipient_id):
+    sender_id = session['user_id']
+
+    existing = message.query.filter_by(
+        sender_id = sender_id,
+        reciever_id = recipient_id
+    ).first()
+
+    if existing:
+        flash("Already Tried to Connect with User")
+        return redirect(url_for('index'))
+    
+    message_content = f"Hi I want to Room with You!"
+
+    new_message = message(
+        sender_id = sender_id,
+        reciever_id = recipient_id,
+        message=message_content
+    )
+    db.session.add(new_message)
+    db.session.commit()
+
+    flash("Request Sent!")
+    return redirect(url_for('index'))
+    

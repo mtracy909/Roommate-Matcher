@@ -30,8 +30,9 @@
               </ul>
             </div>
           {% endif %}
-
-          <button class="connect-btn">Connect</button>
+          <form method="POST" action="{{ url_for('connect', recipient_id=user.id)}}">
+            <button type="submit" class="connect-btn">Connect</button>
+          </form>
         </div>
       {% endfor %}
     </div>
