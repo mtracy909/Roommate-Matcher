@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+
+{% block content %}
+  <main class="inbox">
+    <h1>Your Inbox</h1>
+
+    {% if messages %}
+      <ul class="message-list">
+        {% for msg in messages %}
+          <li class="message-card">
+            <p><strong>From:</strong> {{ msg.sender.f_name }} {{ msg.sender.l_name }} (@{{ msg.sender.username }})</p>
+            <p><strong>Message:</strong> {{ msg.message }}</p>
+            <p class="timestamp">{{ msg.created_at.strftime('%b %d, %Y %I:%M %p') }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>You have no messages.</p>
+    {% endif %}
+  </main>
+{% endblock %}
