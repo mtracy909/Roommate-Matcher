@@ -25,14 +25,17 @@
     <script src="{{url_for('static', filename='js/main.js')}}"></script>
     <h1>Find Your Ideal Roommate</h1>
     <p class="slogan">Connect with roommates living in your apartment complex.</p>
-    <form action="{{ url_for('search') }}" method="GET" class="search-form search-bar" role="search" autocomplete="off">
-      <label for="searchBar" class="sr-only">Enter apartment complex name</label>
-      <input id="searchBar" type="text" name="complex_name" placeholder="Enter Apartment Complex Name" aria-label="Search by apartment complex name" required>
-      <script>
-        autocomplete(document.getElementById("searchBar"), complexes);
-      </script>
-      <button type="submit" aria-label="Search">Search</button>
-    </form>
+    <div class="autocomplete-container">
+      <form action="{{ url_for('search') }}" method="GET" class="search-form search-bar" role="search" autocomplete="off">
+        <label for="searchBar" class="sr-only">Enter apartment complex name</label>
+        <input id="searchBar" type="text" name="complex_name" placeholder="Enter Apartment Complex Name" aria-label="Search by apartment complex name" required>
+        <button type="submit" aria-label="Search">Search</button>
+      </form>
+    </div>
+    <script>
+      // Make sure this script runs after the searchBar element is in the DOM
+      autocomplete(document.getElementById("searchBar"), complexes);
+    </script>
   </section>
 
   <section class="popular-complexes">
