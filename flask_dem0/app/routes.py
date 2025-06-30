@@ -383,4 +383,33 @@ def connect(recipient_id):
 
     flash("Request Sent!")
     return redirect(url_for('index'))
-    
+
+
+@app.route('/inbox')
+@login_required
+def inbox():
+    try:
+        # Fetch messages where the current user is the receiver, newest first
+        messages = (
+            db.session.query(message)
+            .filter_by(receiver_id=current_user.id)
+            .order_by(message.created_at.desc())
+            .all()
+        )
+
+        # Optional: Preload sender info if not automatically eager-loaded
+        messages_data = []
+        for msg in messages:
+            sender = User.query.get(msg.sender_id)
+            messages_data.append({
+                "sender_name": f"{sender.f_name} {sender.l_name}" if sender else "Unknown Sender",
+                "content": msg.message,
+                "timestamp": msg.created_at.strftime("%b %d, %Y %I:%M %p")
+            })
+
+        return render_template('inbox.html', messages=messages_data)
+
+    except Exception as e:
+        flash("There was an issue loading your inbox.")
+        print(f"Error loading inbox: {e}")
+        return render_template('inbox.html', messages=[])

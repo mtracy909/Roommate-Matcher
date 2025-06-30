@@ -9,6 +9,7 @@
   <nav class="main-nav">
     <ul class="nav-links">
       {% if session.user_id %}
+      <li><a href="{{ url_for('inbox') }}" class="button button-primary">Inbox</a></li>
       <li><a href="{{ url_for('create_profile') }}" class="button button-primary">Create Profile</a></li>
       <li><a href="{{ url_for('logout') }}" class="button button-secondary">Logout</a></li>
       <li class="welcome-message" aria-live="polite">Welcome, {{ session.username }}!</li>
