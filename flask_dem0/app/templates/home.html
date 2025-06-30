@@ -22,6 +22,7 @@
 
 <main class="container">
   <section class="search-section">
+    <script src="{{url_for('static', filename='js/main.js')}}"></script>
     <h1>Find Your Ideal Roommate</h1>
     <p class="slogan">Connect with roommates living in your apartment complex.</p>
     <form action="{{ url_for('search') }}" method="GET" class="search-form search-bar" role="search" autocomplete="off">
