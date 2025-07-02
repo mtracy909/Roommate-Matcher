@@ -33,7 +33,7 @@ class User(UserMixin, db.Model):
     
     received_messages: so.Mapped[list["message"]] = so.relationship(
         "message", 
-        foreign_keys="message.reciever_id", 
+        foreign_keys="message.receiver_id", 
         back_populates="receiver"
     )
 
@@ -45,7 +45,7 @@ class User(UserMixin, db.Model):
     
     received_rating: so.Mapped[list["rating"]] = so.relationship(
         "rating", 
-        foreign_keys="rating.reciever_id", 
+        foreign_keys="rating.receiver_id", 
         back_populates="receiver"
     )
 
@@ -86,7 +86,7 @@ class User_Preference(db.Model):
 class message(db.Model):
 
     message_id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    reciever_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    receiver_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
     sender_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
 
     message: so.Mapped[str] = so.mapped_column(sa.String(180), index=True)
@@ -100,14 +100,14 @@ class message(db.Model):
     
     receiver: so.Mapped["User"] = so.relationship(
         "User", 
-        foreign_keys=[reciever_id], 
+        foreign_keys=[receiver_id], 
         back_populates="received_messages"
     )
 
 class rating(db.Model):
 
     rating_id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    reciever_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    receiver_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
     sender_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
 
     message: so.Mapped[str] = so.mapped_column(sa.String(180), index=True)
@@ -120,7 +120,7 @@ class rating(db.Model):
     
     receiver: so.Mapped["User"] = so.relationship(
         "User", 
-        foreign_keys=[reciever_id], 
+        foreign_keys=[receiver_id], 
         back_populates="received_rating"
     )
 

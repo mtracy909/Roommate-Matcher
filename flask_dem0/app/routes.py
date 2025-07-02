@@ -364,7 +364,7 @@ def connect(recipient_id):
 
     existing = message.query.filter_by(
         sender_id = sender_id,
-        reciever_id = recipient_id
+        receiver_id = recipient_id
     ).first()
 
     if existing:
@@ -375,7 +375,7 @@ def connect(recipient_id):
 
     new_message = message(
         sender_id = sender_id,
-        reciever_id = recipient_id,
+        receiver_id = recipient_id,
         message=message_content
     )
     db.session.add(new_message)
