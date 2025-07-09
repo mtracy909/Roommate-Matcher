@@ -1,21 +1,60 @@
 {% extends "index.html" %}
 
-{% block content %}
-  <main class="inbox">
-    <h1>Your Inbox</h1>
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='inbox.css') }}">
+{% endblock %}
 
-    {% if messages %}
-      <ul class="message-list">
-        {% for msg in messages %}
-          <li class="message-card">
-            <p><strong>From:</strong> {{ msg.sender.f_name }} {{ msg.sender.l_name }} (@{{ msg.sender.username }})</p>
-            <p><strong>Message:</strong> {{ msg.message }}</p>
-            <p class="timestamp">{{ msg.created_at.strftime('%b %d, %Y %I:%M %p') }}</p>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>You have no messages.</p>
-    {% endif %}
-  </main>
+{% block content %}
+<header class="main-header">
+  <div class="logo">
+    <a href="{{ url_for('index') }}" aria-label="Roommate Matcher Home">
+      <img src="{{ url_for('static', filename='starter-logo.png') }}" alt="Roommate Matcher Logo" width="60" height="60">
+    </a>
+  </div>
+  <nav class="main-nav">
+    <ul class="nav-links">
+      {% if session.user_id %}
+      <li><a href="{{ url_for('inbox') }}" class="button button-primary">Inbox</a></li>
+      <li><a href="{{ url_for('create_profile') }}" class="button button-primary">My Profile</a></li>
+      <li><a href="{{ url_for('logout') }}" class="button button-secondary">Logout</a></li>
+      <li class="welcome-message" aria-live="polite">Welcome, {{ session.username }}!</li>
+      {% else %}
+      <li><a href="{{ url_for('login') }}" class="button button-primary">Login</a></li>
+      <li><a href="{{ url_for('signup') }}" class="button button-secondary">Sign Up</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</header>
+
+<main class="inbox-container">
+  <h1>Your Inbox</h1>
+
+  {% if messages %}
+    <div class="message-list">
+      {% for msg in messages %}
+        <article class="message-card" aria-labelledby="sender-{{ msg.message_id }}">
+          <header class="message-header">
+            <div class="sender-info" id="sender-{{ msg.message_id }}">
+              <strong>From:</strong> {{ msg.sender.f_name }} {{ msg.sender.l_name }}
+              <span class="username">(@{{ msg.sender.username }})</span>
+            </div>
+            <time datetime="{{ msg.created_at.isoformat() }}" class="message-timestamp">
+              {{ msg.created_at.strftime('%b %d, %Y at %I:%M %p') }}
+            </time>
+          </header>
+          <div class="message-body">
+            <p>{{ msg.message }}</p>
+          </div>
+          <footer class="message-footer">
+            <button class="reply-btn">Reply</button>
+          </footer>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="no-messages">
+      <p>You have no messages yet. When another user connects with you, their message will appear here.</p>
+    </div>
+  {% endif %}
+</main>
 {% endblock %}
