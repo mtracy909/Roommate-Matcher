@@ -110,9 +110,9 @@ def get_names(name_file):
 def generate_profiles(aparts):
     #sets the seed so names can be consitiant accross all instances
     random.seed(SEED)
-    females = get_names("./test_names/f_names.txt")
-    last_names = get_names("./test_names/l_names.txt")
-    males = get_names("./test_names/m_names.txt")
+    females = get_names("test_names/f_names.txt")
+    last_names = get_names("test_names/l_names.txt")
+    males = get_names("test_names/m_names.txt")
 
     profiles = []
     for apt in aparts:
@@ -124,6 +124,8 @@ def generate_profiles(aparts):
             profiles.append(m_profile)
 
     return profiles
+
+
 
 def init_test_profiles2():
     print("Adding test users...")
