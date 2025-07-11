@@ -38,8 +38,8 @@
               <strong>From:</strong> {{ msg.sender.f_name }} {{ msg.sender.l_name }}
               <span class="username">(@{{ msg.sender.username }})</span>
             </div>
-            <time datetime="{{ msg.created_at.isoformat() }}" class="message-timestamp">
-              {{ msg.created_at.strftime('%b %d, %Y at %I:%M %p') }}
+            <time datetime="{{ msg.timestamp }}" class="message-timestamp">
+              {{ msg.timestamp }}
             </time>
           </header>
           <div class="message-body">

@@ -410,14 +410,15 @@ def inbox():
             .order_by(message.created_at.desc())
             .all()
         )
+        
 
         # Optional: Preload sender info if not automatically eager-loaded
         messages_data = []
         for msg in messages:
             sender = User.query.get(msg.sender_id)
             messages_data.append({
-                "sender_name": f"{sender.f_name} {sender.l_name}" if sender else "Unknown Sender",
-                "content": msg.message,
+                "sender": sender if sender else "Unknown Sender",
+                "message": msg.message,
                 "timestamp": msg.created_at.strftime("%b %d, %Y %I:%M %p")
             })
 
