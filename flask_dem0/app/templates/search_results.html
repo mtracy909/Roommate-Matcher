@@ -5,14 +5,50 @@
 {% endblock %}
 
 {% block content %}
-<div class="logo">
-  <a href="{{ url_for('index') }}">
-    <img src="{{ url_for('static', filename='starter-logo.png') }}" alt="Roommate Matcher Logo">
-  </a>
-</div>
-<main>
-  <h1>Roommates at {{ complex_name }}</h1>
+<!-- 🔝 Header Row: Logo (left), Heading (center), Filters (right) -->
+<!-- 🔝 Top header row -->
+<div class="search-header">
+  <!-- Logo -->
+  <div class="header-section logo">
+    <a href="{{ url_for('index') }}">
+      <img src="{{ url_for('static', filename='starter-logo.png') }}" alt="Roommate Matcher Logo">
+    </a>
+  </div>
 
+  <!-- Center heading -->
+  <div class="header-section center-heading">
+    <h1>Roommates at {{ complex_name }}</h1>
+  </div>
+
+  <!-- Filters: All elements inline -->
+  <div class="header-section filter-form">
+    <form method="POST" action="{{ url_for('search_results', complex_name=complex_name) }}" class="filter-form-inline">
+      <label for="dropdown-button"><strong>Preferences:</strong></label>
+      <div class="dropdown">
+        <button type="button" id="dropdown-button" onclick="toggleDropdown()">Select Preferences ▾</button>
+        <div id="dropdown-content" class="dropdown-content">
+          {% for pref in preferences %}
+            <label>
+              <input
+                type="checkbox"
+                name="selected_prefs"
+                value="{{ pref.id }}"
+                {% if pref.id|string in request.form.getlist('selected_prefs') %}checked{% endif %}>
+              {{ pref.name }}
+            </label><br>
+          {% endfor %}
+        </div>
+      </div>
+
+      <button type="submit">Search</button>
+      <a href="{{ url_for('search_results', complex_name=complex_name) }}" class="clear-link">Clear Preferences</a>
+    </form>
+  </div>
+</div>
+
+
+<!-- 🔍 Main Content -->
+<main>
   {% if users %}
     <div class="profile-grid">
       {% for user in users %}
@@ -30,7 +66,8 @@
               </ul>
             </div>
           {% endif %}
-          <form method="POST" action="{{ url_for('connect', recipient_id=user.id)}}">
+
+          <form method="POST" action="{{ url_for('connect', recipient_id=user.id) }}">
             <button type="submit" class="connect-btn">Connect</button>
           </form>
         </div>
@@ -40,4 +77,19 @@
     <p>No users found at this complex.</p>
   {% endif %}
 </main>
+
+<!-- 🔽 Dropdown toggle script -->
+<script>
+  function toggleDropdown() {
+    const content = document.getElementById("dropdown-content");
+    content.style.display = content.style.display === "block" ? "none" : "block";
+  }
+
+  document.addEventListener("click", function (e) {
+    const dropdown = document.querySelector(".dropdown");
+    if (!dropdown.contains(e.target)) {
+      document.getElementById("dropdown-content").style.display = "none";
+    }
+  });
+</script>
 {% endblock %}

@@ -254,17 +254,18 @@ def create_profile():
     
     return render_template('create_profile.html', form=form)
 
-@app.route("/search/<complex_name>")
+@app.route("/search/<complex_name>", methods=["GET", "POST"])
 @login_required
 def search_results(complex_name):
     try:
         # Convert slug to display name
         display_name = apartment_display_names.get(complex_name, complex_name)
+        selected_pref_ids = request.form.getlist('selected_prefs')  # from checkboxes
         
         print(f"Searching for apartment: {complex_name} -> {display_name}")
 
-        # Query users by multiple apartment name patterns to handle inconsistencies
-        users = db.session.scalars(
+        # Base query for users at this complex
+        user_query = (
             sa.select(User)
             .join(User.apartment)
             .where(
@@ -273,18 +274,23 @@ def search_results(complex_name):
                     Apartment.display_name == display_name,
                     Apartment.url_slug == complex_name,
                     Apartment.name.like(f"%{display_name}%"),
-                    # Handle cases where apartment names have "- Men" or "- Women"
                     Apartment.name.like(f"{display_name}%"),
-                    # Handle "The" prefix variations
                     Apartment.name.like(f"%, {display_name}%") if display_name.startswith('The ') else sa.text('false')
                 )
             )
             .where(User.f_name.isnot(None))
             .where(User.f_name != '')
-        ).all()
-        
+        )
+
+        # Add preference filtering if needed
+        if selected_pref_ids:
+            user_query = user_query.join(User_Preference).where(User_Preference.preference_id.in_(selected_pref_ids))
+
+        # Execute query
+        users = db.session.scalars(user_query).all()
+
         print(f"Found {len(users)} users")
-        
+
         # Add preferences to each user for display
         for user in users:
             user.preferences_list = []
@@ -300,8 +306,16 @@ def search_results(complex_name):
                 )
                 if pref_name:
                     user.preferences_list.append(pref_name)
+        
+        # Fetch all preferences for the dropdown
+        all_preferences = db.session.scalars(sa.select(Preference)).all()
 
-        return render_template("search_results.html", complex_name=display_name, users=users)
+        return render_template(
+            "search_results.html",
+            complex_name=display_name,
+            users=users,
+            preferences=all_preferences
+        )
 
     except Exception as e:
         flash('An error occurred while searching. Please try again.', 'error')
