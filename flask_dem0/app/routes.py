@@ -284,7 +284,7 @@ def search_results(complex_name):
 
         # Add preference filtering if needed
         if selected_pref_ids:
-            user_query = user_query.join(User_Preference).where(User_Preference.preference_id.in_(selected_pref_ids))
+            user_query = user_query.join(User_Preference).where(User_Preference.preference_id.in_(selected_pref_ids)).group_by(User.id).having(sa.func.count(User_Preference.preference_id) == len(selected_pref_ids)).order_by(User.username)
 
         # Execute query
         users = db.session.scalars(user_query).all()
