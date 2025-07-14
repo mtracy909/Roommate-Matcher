@@ -324,14 +324,14 @@ def search_results(complex_name):
     
 @app.route("/search")
 def search():
+    # grab the url_slug from the database and sue that instead of the direct string from the search bar
     complex_name = request.args.get('complex_name', '').strip().lower()
     complex_result = db.session.scalar(sa.select(Apartment.url_slug).where(sa.or_(Apartment.name.ilike(complex_name), Apartment.display_name.ilike(complex_name))))
-    print(f"RESULT: {complex_result}")
+    
     if not complex_result:
         flash('Please enter an apartment complex name to search', 'warning')
         return redirect(url_for('index'))
     url_friendly_name = complex_result.replace(' ', '_').replace('-', '_')
-    print(f"URL: {url_friendly_name}")
     return redirect(url_for('search_results', complex_name=url_friendly_name))
 
 #Debug routes (remove in production)
