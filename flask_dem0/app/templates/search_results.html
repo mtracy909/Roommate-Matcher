@@ -39,9 +39,10 @@
           {% endfor %}
         </div>
       </div>
-
+      
+      <div class="filter-actions"></div>
       <button type="submit">Search</button>
-      <a href="{{ url_for('search_results', complex_name=complex_name) }}" class="clear-link">Clear Preferences</a>
+       <a href="{{ url_for('search_results', complex_name=complex_name) }}" class="clear-link">Clear Preferences</a>
     </form>
   </div>
 </div>
