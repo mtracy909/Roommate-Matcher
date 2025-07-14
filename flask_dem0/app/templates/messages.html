@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='inbox.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='messages.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -27,7 +27,7 @@
 </header>
 
 <main class="inbox-container">
-  <h1>Your Inbox</h1>
+  <h1>Messages</h1>
 
   {% if messages %}
     <div class="message-list">
@@ -35,8 +35,7 @@
         <article class="message-card" aria-labelledby="sender-{{ msg.message_id }}">
           <header class="message-header">
             <div class="sender-info" id="sender-{{ msg.message_id }}">
-              <strong>From:</strong> {{ msg.sender.f_name }} {{ msg.sender.l_name }}
-              <span class="username">(@{{ msg.sender.username }})</span>
+              <strong>From:</strong> {{ msg.sender.username}}
             </div>
             <time datetime="{{ msg.timestamp }}" class="message-timestamp">
               {{ msg.timestamp }}
@@ -46,16 +45,19 @@
             <p>{{ msg.message }}</p>
           </div>
           <footer class="message-footer">
-            <form action="{{ url_for('messages', recipient_id=msg.sender.id) }}" method="GET">
-              <button class="reply-btn">Reply</button>
-            </form>
+            <button class="reply-btn">Reply</button>
           </footer>
         </article>
       {% endfor %}
+        <form method="POST" action="{{ url_for('send_message', recipient_id=user2 ) }}">
+            <label for="sendMessage">message</label>
+            <input id="sendMessage" type="text" placeholder="message" name="message_to_send">
+            <button type="submit">Send</button>
+        </form>
     </div>
   {% else %}
     <div class="no-messages">
-      <p>You have no messages yet. When another user connects with you, their message will appear here.</p>
+      <p>You have no messages yet</p>
     </div>
   {% endif %}
 </main>

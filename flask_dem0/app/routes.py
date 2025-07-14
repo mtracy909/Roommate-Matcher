@@ -401,7 +401,6 @@ def connect(recipient_id):
     flash("Request Sent!")
     return redirect(url_for('index'))
 
-
 @app.route('/inbox')
 @login_required
 def inbox():
@@ -431,3 +430,47 @@ def inbox():
         flash("There was an issue loading your inbox.")
         print(f"Error loading inbox: {e}")
         return render_template('inbox.html', messages=[])
+    
+
+@app.route('/messages/<recipient_id>')
+@login_required
+def messages(recipient_id):
+
+    condition1 = (message.sender_id == recipient_id) & (message.receiver_id == current_user.id)
+    condition2 = (message.receiver_id == recipient_id) & (message.sender_id == current_user.id)
+
+    list_message = db.session.scalars(
+        sa.select(message).where(condition1 | condition2).order_by(message.created_at.desc())
+    ).all()
+    messages_data = []
+    for msg in list_message:
+        sender = User.query.get(msg.sender_id)
+        messages_data.append({
+            "sender": sender if sender else "Unknown Sender",
+            "message": msg.message,
+            "timestamp": msg.created_at.strftime("%b %d, %Y %I:%M %p")
+        })
+
+    return render_template('messages.html', messages=messages_data, user2=recipient_id)
+
+@app.route('/send_message/<recipient_id>', methods=["POST"])
+@login_required
+def send_message(recipient_id):
+    sender_id = session['user_id']
+    
+    message_content = request.form.get('message_to_send', '')
+
+    if not message_content:
+        flash("No message!")
+        return redirect(url_for('messages', recipient_id=recipient_id))
+
+    new_message = message(
+        sender_id = sender_id,
+        receiver_id = recipient_id,
+        message=message_content
+    )
+    db.session.add(new_message)
+    db.session.commit()
+
+    flash("Message Sent!")
+    return redirect(url_for('messages', recipient_id=recipient_id))

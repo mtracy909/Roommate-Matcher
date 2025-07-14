@@ -5,9 +5,9 @@ import sqlalchemy.orm as so
 from flask_login import UserMixin
 from app import db, login
 
-def get_current_minute():
+def get_current_time():
         now = datetime.now(timezone.utc)
-        return now.replace(second=0, microsecond=0)
+        return now.replace(microsecond=0)
 
 class User(UserMixin, db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
@@ -96,7 +96,7 @@ class message(db.Model):
     message: so.Mapped[str] = so.mapped_column(sa.String(180), index=True)
 
     
-    created_at: so.Mapped[datetime] = so.mapped_column(default=get_current_minute)
+    created_at: so.Mapped[datetime] = so.mapped_column(default=get_current_time)
 
 
     sender: so.Mapped["User"] = so.relationship(
